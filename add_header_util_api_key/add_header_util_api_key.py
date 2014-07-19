@@ -21,11 +21,11 @@ def auth():
     auth_headers = {'content-type': 'application/json'}
     pyrax.set_setting("identity_type", "rackspace")
     try:
-	r = requests.post(url, data=json.dumps(jsonreq), headers=auth_headers)
-	jsonresp = json.loads(r.text)
-	token = str(jsonresp['access']['token']['id'])
-	tenant = str(jsonresp['access']['token']['tenant']['id'])
-	pyrax.auth_with_token(token, tenant)
+        r = requests.post(url, data=json.dumps(jsonreq), headers=auth_headers)
+        jsonresp = json.loads(r.text)
+        token = str(jsonresp['access']['token']['id'])
+        tenant = str(jsonresp['access']['token']['tenant']['id'])
+        pyrax.auth_with_token(token, tenant)
 
     except:
         print "Bad name or password!"
@@ -34,22 +34,22 @@ def auth():
     return token, jsonresp
 
 def get_link(jsonresp):
-    foo = jsonresp["access"]["serviceCatalog"]
-    for i in foo:
-	for value in i.values():
+    serviceCatalog = jsonresp["access"]["serviceCatalog"]
+    for service in serviceCatalog:
+	for value in service.values():
 	    if value == "cloudFiles":
-	        bar = i
-    
-    regions = [ 
-	{ str(bar["endpoints"][0]["region"]) : str(bar["endpoints"][0]["publicURL"]) },
-	{ str(bar["endpoints"][1]["region"]) : str(bar["endpoints"][1]["publicURL"]) },
-	{ str(bar["endpoints"][2]["region"]) : str(bar["endpoints"][2]["publicURL"]) },
-	{ str(bar["endpoints"][3]["region"]) : str(bar["endpoints"][3]["publicURL"])}]
+	        bar = service
+
+    regions = []
+    for endpoint in bar["endpoints"]:
+        #print "EP: ", endpoint
+        regions.append({ str(endpoint["region"]): str(endpoint["publicURL"]) })
 
     sys.stdout.write("\x1b[2J\x1b[H")
     print "Regions/URLs:"
     for i, item in enumerate(regions):
-        for value in item.values():
+        #for value in item.values():
+        for value in item.keys():
 	    j=str(i+1)
 	    print "%s) %s" % (j, value)
 

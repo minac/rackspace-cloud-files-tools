@@ -1,0 +1,4 @@
+#!/Users/miguel/rackspace-cloud-files-tools/add_header_util_api_key/darin/bin/python
+import sys
+import swiftly.cli
+sys.exit(swiftly.cli.CLI()())
